@@ -251,9 +251,9 @@ module Internationalize
         return unless column
         return if column.default.present?
 
-        warn "[Internationalize] WARNING: Column #{table_name}.#{attr}_translations " \
-             "is missing `default: {}`. This may cause errors. " \
-             "Add `default: {}` to your migration."
+        warn("[Internationalize] WARNING: Column #{table_name}.#{attr}_translations " \
+          "is missing `default: {}`. This may cause errors. " \
+          "Add `default: {}` to your migration.")
       end
 
       # Query translated attributes with exact or partial matching

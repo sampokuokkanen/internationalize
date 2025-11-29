@@ -288,8 +288,8 @@ class ModelTest < InternationalizeTestCase
   def test_international_create_with_mixed_string_and_hash
     I18n.locale = :en
     article = Article.international_create!(
-      title: "Hello",  # Direct string for current locale
-      description: { en: "English desc", de: "German desc" },  # Hash for multiple
+      title: "Hello", # Direct string for current locale
+      description: { en: "English desc", de: "German desc" }, # Hash for multiple
     )
 
     assert_equal("Hello", article.title_en)
@@ -366,7 +366,7 @@ class ModelTest < InternationalizeTestCase
     # Create a table without default: {}
     ActiveRecord::Schema.define do
       create_table(:no_default_posts, force: true) do |t|
-        t.json :title_translations  # No default!
+        t.json(:title_translations) # No default!
       end
     end
 
@@ -378,6 +378,7 @@ class ModelTest < InternationalizeTestCase
       Class.new(ActiveRecord::Base) do
         self.table_name = "no_default_posts"
         include Internationalize::Model
+
         international :title
       end
     ensure
