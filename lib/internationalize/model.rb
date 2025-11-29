@@ -324,7 +324,21 @@ module Internationalize
 
         # Set all translations at once
         define_method("#{attr}_translations=") do |hash|
-          write_attribute(translations_column, hash&.stringify_keys || {})
+          return write_attribute(translations_column, {}) if hash.nil?
+
+          unless hash.is_a?(Hash)
+            raise ArgumentError, "#{attr}_translations must be a Hash, got #{hash.class}"
+          end
+
+          allowed_locales = Internationalize.locales.map(&:to_s)
+          hash.each_key do |key|
+            unless allowed_locales.include?(key.to_s)
+              raise ArgumentError, "Invalid locale '#{key}' for #{attr}_translations. " \
+                "Allowed locales: #{allowed_locales.join(', ')}"
+            end
+          end
+
+          write_attribute(translations_column, hash.stringify_keys)
         end
       end
 

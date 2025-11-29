@@ -21,7 +21,7 @@ For each `international :title` declaration:
 | `title=` | Set translation for current `I18n.locale` |
 | `title?` | Check if translation exists |
 | `title_translations` | Get raw hash of all translations |
-| `title_translations=` | Set all translations at once |
+| `title_translations=` | Set all translations at once (validates locale keys) |
 
 ### Locale-Specific Accessors
 
@@ -78,4 +78,40 @@ Translations automatically fall back to the default locale when missing:
 article.title_en = "Hello"
 I18n.locale = :de
 article.title  # => "Hello" (falls back to default locale)
+```
+
+## ActionText Support
+
+For rich text with attachments, use `international_rich_text` (requires ActionText):
+
+```ruby
+require "internationalize/rich_text"
+
+class Article < ApplicationRecord
+  include Internationalize::Model
+  include Internationalize::RichText
+
+  international_rich_text :content
+end
+```
+
+This generates `has_rich_text :content_en`, `has_rich_text :content_de`, etc. for each locale.
+
+### Generated Methods
+
+| Method | Description |
+|--------|-------------|
+| `content` | Get rich text for current locale (with fallback) |
+| `content=` | Set rich text for current locale |
+| `content?` | Check if rich text exists |
+| `content_en` | Direct access to English rich text |
+| `content_de` | Direct access to German rich text |
+| `content_translated?(:de)` | Check if translation exists |
+| `content_translated_locales` | Array of locales with content |
+
+```ruby
+article.content = "<p>Hello</p>"  # Sets for current locale
+article.content                    # Gets for current locale (with fallback)
+article.content.body               # ActionText::Content object
+article.content.embeds             # Attachments work per-locale
 ```

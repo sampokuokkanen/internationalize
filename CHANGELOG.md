@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ActionText support via `international_rich_text` (optional, requires ActionText)
   - Generates `has_rich_text` for each locale with unified accessor
   - Full attachment support per locale
+- Validation for `title_translations=` setter - rejects non-Hash values and invalid locales
 
 ### Removed
 

@@ -86,6 +86,7 @@ Article.international_order(:title, :desc)
 - No JOINs - data lives in the same table
 - Automatic fallback to default locale
 - Works with SQLite, PostgreSQL, and MySQL
+- ActionText support via `international_rich_text` (see Model API)
 
 ## Important: Column Defaults
 

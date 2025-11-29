@@ -139,6 +139,24 @@ class ModelTest < InternationalizeTestCase
     assert_nil(article.title_translations[:en])
   end
 
+  def test_translations_rejects_non_hash
+    article = Article.new
+
+    error = assert_raises(ArgumentError) { article.title_translations = "invalid" }
+    assert_match(/must be a Hash/, error.message)
+
+    error = assert_raises(ArgumentError) { article.title_translations = ["en", "Hello"] }
+    assert_match(/must be a Hash/, error.message)
+  end
+
+  def test_translations_rejects_invalid_locales
+    article = Article.new
+
+    error = assert_raises(ArgumentError) { article.title_translations = { xx: "Invalid" } }
+    assert_match(/Invalid locale 'xx'/, error.message)
+    assert_match(/Allowed locales:/, error.message)
+  end
+
   # ===================
   # Instance Helper Methods
   # ===================
