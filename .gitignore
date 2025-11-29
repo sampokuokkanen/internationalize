@@ -31,3 +31,12 @@ Thumbs.db
 # SimpleCov
 .resultset.json
 .resultset.json.lock
+
+# Ruby LSP
+.ruby-lsp/
+
+# StackProf dumps
+*.dump
+
+***REMOVED***
+***REMOVED***

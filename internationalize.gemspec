@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
   spec.metadata["changelog_uri"] = "#{spec.homepage}/blob/main/CHANGELOG.md"
 
   spec.files = Dir.chdir(__dir__) do
-    Dir["{lib,bake,context}/**/*", "LICENSE.txt", "README.md", "CHANGELOG.md"]
+    Dir["{lib}/**/*", "LICENSE.txt", "README.md", "CHANGELOG.md"]
   end
   spec.require_paths = ["lib"]
 
