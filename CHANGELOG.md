@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.2] - 2024-11-29
+
+### Added
+
+- Validation for hyphenated locales (e.g., `zh-TW`) - raises helpful error suggesting underscore format (`zh_TW`)
+- Auto-load `Internationalize::RichText` when ActionText is available (no manual require needed)
+
+## [0.2.1] - 2024-11-29
+
+### Added
+
+- ActionText documentation in agent context files
+
 ## [0.2.0] - 2024-11-29
 
 ### Added

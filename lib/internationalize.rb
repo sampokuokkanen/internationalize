@@ -6,6 +6,7 @@ require "active_record"
 require_relative "internationalize/version"
 require_relative "internationalize/adapters"
 require_relative "internationalize/model"
+require_relative "internationalize/rich_text" if defined?(ActionText)
 
 module Internationalize
   class << self

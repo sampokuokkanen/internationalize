@@ -371,4 +371,22 @@ class ModelTest < InternationalizeTestCase
     assert_match(/missing.*default: \{\}/, output)
     assert_match(/no_default_posts\.title_translations/, output)
   end
+
+  def test_rejects_hyphenated_locales
+    original_locales = I18n.available_locales
+    I18n.available_locales = [:en, :"zh-TW"]
+
+    error = assert_raises(ArgumentError) do
+      Class.new(ActiveRecord::Base) do
+        self.table_name = "articles"
+        include Internationalize::Model
+        international :title
+      end
+    end
+
+    assert_match(/Locale 'zh-TW' contains a hyphen/, error.message)
+    assert_match(/Use underscore format instead: :zh_TW/, error.message)
+  ensure
+    I18n.available_locales = original_locales
+  end
 end
