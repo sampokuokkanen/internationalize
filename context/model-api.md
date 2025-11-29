@@ -113,3 +113,36 @@ article.content                    # Gets for current locale (with fallback)
 article.content.body               # ActionText::Content object
 article.content.embeds             # Attachments work per-locale
 ```
+
+## Fixtures
+
+Use the actual column name (`*_translations`) in fixtures, not the virtual accessor:
+
+### Nested Format
+
+```yaml
+# test/fixtures/articles.yml
+hello_world:
+  title_translations:
+    en: "Hello World"
+    de: "Hallo Welt"
+  description_translations:
+    en: "A greeting"
+    de: "Eine Begrüßung"
+  status: published
+```
+
+### Inline Hash Format
+
+```yaml
+japanese_post:
+  title_translations: { en: "Hello", ja: "こんにちは" }
+  status: published
+```
+
+### Important Notes
+
+- Use `title_translations:` (column name), NOT `title:`
+- Keys can be symbols (`:en`) or strings (`"en"`) - YAML converts them
+- Both nested and inline hash formats work identically
+- Missing locales are simply not set (no error)

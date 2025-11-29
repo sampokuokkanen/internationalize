@@ -196,6 +196,19 @@ article.content.body                  # ActionText::Content object
 article.content.embeds                # Attachments work per-locale
 ```
 
+### Fixtures
+
+Use the `*_translations` column name with nested locale keys:
+
+```yaml
+# test/fixtures/articles.yml
+hello_world:
+  title_translations:
+    en: "Hello World"
+    de: "Hallo Welt"
+  status: published
+```
+
 ## Configuration
 
 ```ruby

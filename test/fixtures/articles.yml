@@ -1,0 +1,27 @@
+# Fixtures for internationalized Article model
+# Use the *_translations column name with nested locale keys
+
+hello_world:
+  title_translations:
+    en: "Hello World"
+    de: "Hallo Welt"
+  description_translations:
+    en: "A greeting post"
+    de: "Ein Begrüßungsbeitrag"
+  status: published
+  published: true
+
+german_only:
+  title_translations:
+    de: "Nur auf Deutsch"
+  description_translations:
+    de: "Dieser Beitrag ist nur auf Deutsch verfügbar"
+  status: draft
+  published: false
+
+# Inline hash format also works
+japanese_post:
+  title_translations: { en: "Japanese Culture", ja: "日本文化" }
+  description_translations: { en: "About Japan", ja: "日本について" }
+  status: published
+  published: true
