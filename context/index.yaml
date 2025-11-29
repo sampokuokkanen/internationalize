@@ -1,0 +1,14 @@
+description: "Lightweight, performant internationalization for Rails using JSON columns"
+files:
+  - path: getting-started.md
+    title: "Getting Started"
+    description: "Quick setup guide for Internationalize"
+  - path: model-api.md
+    title: "Model API"
+    description: "Model mixin methods and generated accessors"
+  - path: query-api.md
+    title: "Query API"
+    description: "Query methods for searching and filtering translations"
+  - path: configuration.md
+    title: "Configuration"
+    description: "Global and per-attribute configuration options"

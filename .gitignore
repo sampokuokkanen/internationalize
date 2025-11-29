@@ -1,0 +1,33 @@
+# Bundle
+/vendor/bundle/
+/.bundle/
+
+# Coverage
+/coverage/
+
+# Temporary files
+/tmp/
+/log/
+*.log
+
+# Database files
+*.db
+*.sqlite3
+
+# Gem build
+/pkg/
+*.gem
+
+# IDE
+.idea/
+*.swp
+*.swo
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# SimpleCov
+.resultset.json
+.resultset.json.lock

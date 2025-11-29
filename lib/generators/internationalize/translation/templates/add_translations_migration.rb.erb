@@ -1,0 +1,9 @@
+# frozen_string_literal: true
+
+class <%= migration_class_name %> < ActiveRecord::Migration[<%= ActiveRecord::Migration.current_version %>]
+  def change
+<% attributes.each do |attr| -%>
+    add_column :<%= table_name %>, :<%= attr %>_translations, :json, default: {}
+<% end -%>
+  end
+end

@@ -1,0 +1,36 @@
+# frozen_string_literal: true
+
+inherit_gem:
+  rubocop-shopify: rubocop.yml
+
+plugins:
+  - rubocop-performance
+
+AllCops:
+  TargetRubyVersion: 3.1
+  NewCops: enable
+  Exclude:
+    - "vendor/**/*"
+    - "tmp/**/*"
+    - "pkg/**/*"
+
+# Allow longer lines in tests
+Layout/LineLength:
+  Exclude:
+    - "test/**/*"
+
+# Allow block length in tests
+Metrics/BlockLength:
+  Exclude:
+    - "test/**/*"
+    - "*.gemspec"
+
+# Allow method length in tests
+Metrics/MethodLength:
+  Exclude:
+    - "test/**/*"
+
+# Allow class length in tests
+Metrics/ClassLength:
+  Exclude:
+    - "test/**/*"
