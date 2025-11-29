@@ -6,7 +6,6 @@ require "active_record"
 require_relative "internationalize/version"
 require_relative "internationalize/adapters"
 require_relative "internationalize/model"
-require_relative "internationalize/rich_text" if defined?(ActionText)
 
 module Internationalize
   class << self
@@ -22,4 +21,12 @@ module Internationalize
       available_locales || I18n.available_locales
     end
   end
+
+  class Railtie < Rails::Railtie
+    initializer "internationalize.action_text" do
+      ActiveSupport.on_load(:action_text_rich_text) do
+        require "internationalize/rich_text"
+      end
+    end
+  end if defined?(Rails::Railtie)
 end
