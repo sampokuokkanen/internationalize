@@ -4,10 +4,14 @@ Lightweight, performant internationalization for Rails with JSON column storage.
 
 ## Why Internationalize?
 
+Internationalize is a focused, lightweight gem that does one thing well: JSON column translations. No backend abstraction layers, no plugin systems, no extra memory overhead.
+
 Unlike Globalize or Mobility which use separate translation tables requiring JOINs, Internationalize stores translations inline using JSON columns. This means:
 
 - **No JOINs** - translations live in the same table
 - **No N+1 queries** - data is always loaded with the record
+- **No backend overhead** - direct JSON column access, no abstraction layers
+- **~50% less memory** - no per-instance backend objects or plugin chains
 - **Direct method dispatch** - no `method_missing` overhead
 - **Multi-database support** - works with SQLite, PostgreSQL, and MySQL
 - **Visible in schema.rb** - translated fields appear directly in your model's schema
@@ -155,10 +159,6 @@ article.translated?(:title, :de)  # => true/false
 
 # Get all translated locales for an attribute
 article.translated_locales(:title)  # => [:en, :de]
-
-# Set/get translation for specific locale
-article.set_translation(:title, :de, "Hallo Welt")
-article.translation_for(:title, :de)  # => "Hallo Welt"
 ```
 
 ### Fallbacks
@@ -173,10 +173,29 @@ I18n.locale = :de
 article.title  # => "Hello" (falls back to :en)
 ```
 
-Disable fallbacks:
+### ActionText Support
+
+For rich text with attachments, use `international_rich_text` (requires ActionText):
 
 ```ruby
-international :title, fallback: false
+require "internationalize/rich_text"
+
+class Article < ApplicationRecord
+  include Internationalize::Model
+  include Internationalize::RichText
+
+  international_rich_text :content
+end
+```
+
+This generates `has_rich_text :content_en`, `has_rich_text :content_de`, etc. for each locale, with a unified accessor:
+
+```ruby
+article.content = "<p>Hello</p>"     # Sets for current locale
+article.content                       # Gets for current locale (with fallback)
+article.content_en                    # Direct access to English
+article.content.body                  # ActionText::Content object
+article.content.embeds                # Attachments work per-locale
 ```
 
 ## Configuration
@@ -184,10 +203,11 @@ international :title, fallback: false
 ```ruby
 # config/initializers/internationalize.rb
 Internationalize.configure do |config|
-  config.fallback_locale = :en
-  config.available_locales = [:en, :de, :fr]
+  config.available_locales = [:en, :de, :fr]  # Defaults to I18n.available_locales
 end
 ```
+
+Fallback uses `I18n.default_locale` automatically.
 
 ## Performance Comparison
 

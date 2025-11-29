@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## [0.2.0] - 2024-11-29
+
+### Added
+
+- ActionText support via `international_rich_text` (optional, requires ActionText)
+  - Generates `has_rich_text` for each locale with unified accessor
+  - Full attachment support per locale
+
+### Removed
+
+- `fallback: false` option - translations now always fallback to default locale
+- `set_translation(attr, locale, value)` - use `title_de = "value"` instead
+- `translation_for(attr, locale)` - use `title_de` instead
+
+## [0.1.1] - 2024-11-29
+
+### Fixed
+
+- Include `context/` directory in gem for `bake agent:context:install` support
+
 ## [0.1.0] - 2024-11-29
 
 ### Added
@@ -28,7 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `translation_for(attr, locale)`
   - `translated?(attr, locale)`
   - `translated_locales(attr)`
-- Fallback to default locale when translation missing (configurable)
+- Fallback to default locale when translation missing
 - SQLite adapter using `json_extract()`
 - PostgreSQL adapter using `->>` operator
 - MySQL 8+ adapter using `->>` operator (supports mysql2 and trilogy gems)

@@ -5,30 +5,15 @@ require "test_helper"
 class InternationalizeConfigTest < Minitest::Test
   def teardown
     # Reset configuration
-    Internationalize.fallback_locale = nil
     Internationalize.available_locales = nil
   end
 
   def test_configure_block
     Internationalize.configure do |config|
-      config.fallback_locale = :de
       config.available_locales = [:en, :de]
     end
 
-    assert_equal(:de, Internationalize.fallback_locale)
     assert_equal([:en, :de], Internationalize.available_locales)
-  end
-
-  def test_default_locale_uses_fallback_locale_when_set
-    Internationalize.fallback_locale = :fr
-
-    assert_equal(:fr, Internationalize.default_locale)
-  end
-
-  def test_default_locale_uses_i18n_default_when_not_set
-    Internationalize.fallback_locale = nil
-
-    assert_equal(I18n.default_locale, Internationalize.default_locale)
   end
 
   def test_locales_uses_available_locales_when_set
@@ -128,13 +113,6 @@ class ModelTest < InternationalizeTestCase
     assert_equal("Hallo", article.title)
   end
 
-  def test_fallback_disabled
-    product = Product.new(name_translations: { "en" => "Widget" })
-
-    I18n.locale = :de
-    assert_nil(product.name)
-  end
-
   def test_no_fallback_for_default_locale
     article = Article.new(title_translations: { "de" => "Hallo" })
 
@@ -164,20 +142,6 @@ class ModelTest < InternationalizeTestCase
   # ===================
   # Instance Helper Methods
   # ===================
-
-  def test_set_translation_helper
-    article = Article.new
-    article.set_translation(:title, :de, "Hallo")
-
-    assert_equal("Hallo", article.title_de)
-  end
-
-  def test_translation_for_helper
-    article = Article.new(title_translations: { "en" => "Hello", "de" => "Hallo" })
-
-    assert_equal("Hallo", article.translation_for(:title, :de))
-    assert_nil(article.translation_for(:title, :fr))
-  end
 
   def test_translated_predicate
     article = Article.new(title_translations: { "en" => "Hello" })

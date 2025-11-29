@@ -5,27 +5,12 @@
 ```ruby
 # config/initializers/internationalize.rb
 Internationalize.configure do |config|
-  # Override fallback locale (defaults to I18n.default_locale)
-  config.fallback_locale = :en
-
   # Override available locales (defaults to I18n.available_locales)
   config.available_locales = [:en, :de, :fr, :es]
 end
 ```
 
-## Per-Attribute Configuration
-
-```ruby
-class Article < ApplicationRecord
-  include Internationalize::Model
-
-  # With fallback (default)
-  international :title
-
-  # Without fallback
-  international :description, fallback: false
-end
-```
+Fallback locale is always `I18n.default_locale`.
 
 ## Database Setup
 
@@ -72,12 +57,10 @@ end
 
 ## I18n Integration
 
-Internationalize automatically uses Rails I18n settings:
+Internationalize uses Rails I18n settings directly:
 
 ```ruby
 I18n.locale           # Used for current locale
 I18n.default_locale   # Used for fallbacks
-I18n.available_locales # Used for locale-specific accessors
+I18n.available_locales # Used for locale-specific accessors (can be overridden)
 ```
-
-Override these with the configuration options above if needed.

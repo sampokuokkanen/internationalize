@@ -262,11 +262,13 @@ end
 def setup_internationalize_model
   Object.send(:remove_const, :BenchmarkPost) if defined?(BenchmarkPost)
 
-  Object.const_set(:BenchmarkPost, Class.new(ActiveRecord::Base) do
-    include Internationalize::Model
-
-    international :title, :body
-  end)
+  # Use eval to create a named class (anonymous classes don't work with newer ActiveRecord)
+  eval(<<-RUBY, TOPLEVEL_BINDING, __FILE__, __LINE__ + 1)
+    class BenchmarkPost < ActiveRecord::Base
+      include Internationalize::Model
+      international :title, :body
+    end
+  RUBY
 end
 
 def configure_mobility

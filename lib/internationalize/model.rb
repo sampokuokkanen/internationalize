@@ -28,7 +28,6 @@ module Internationalize
       #
       # When called with Symbol arguments, declares attributes as internationalized:
       #   international :title, :description
-      #   international :title, fallback: false
       #
       # When called with keyword arguments, queries translated attributes:
       #   Article.international(title: "Hello")                      # exact match
@@ -37,16 +36,15 @@ module Internationalize
       #   Article.international(title: "Hello", match: :partial, case_sensitive: true)
       #
       # @param attributes [Array<Symbol>] attributes to declare as internationalized
-      # @param fallback [Boolean] whether to fallback to default locale (default: true)
       # @param locale [Symbol] locale to query (default: current locale)
       # @param match [Symbol] :exact or :partial (default: :exact)
       # @param case_sensitive [Boolean] for partial matching only (default: false)
       # @param conditions [Hash] attribute => value pairs to query
       #
-      def international(*attributes, fallback: true, locale: nil, match: :exact, case_sensitive: false, **conditions)
+      def international(*attributes, locale: nil, match: :exact, case_sensitive: false, **conditions)
         if attributes.any? && attributes.first.is_a?(Symbol) && conditions.empty?
           # Declaration mode: international :title, :description
-          declare_international_attributes(attributes, fallback: fallback)
+          declare_international_attributes(attributes)
         else
           # Query mode: Article.international(title: "Hello")
           international_query(conditions, locale: locale, match: match, case_sensitive: case_sensitive)
@@ -71,7 +69,7 @@ module Internationalize
             "Use standard ActiveRecord methods for non-translated attributes."
         end
 
-        locale ||= Internationalize.locale
+        locale ||= I18n.locale
         direction = direction.to_s.upcase
         direction = "ASC" unless VALID_DIRECTIONS.include?(direction)
 
@@ -91,7 +89,7 @@ module Internationalize
       #   Article.translated(:title, :description, locale: :de)
       #
       def translated(*attributes, locale: nil)
-        locale ||= Internationalize.locale
+        locale ||= I18n.locale
         adapter = Adapters.resolve(connection)
         scope = all
 
@@ -117,7 +115,7 @@ module Internationalize
       #   Article.untranslated(:title, locale: :de)
       #
       def untranslated(*attributes, locale: nil)
-        locale ||= Internationalize.locale
+        locale ||= I18n.locale
         adapter = Adapters.resolve(connection)
         scope = all
 
@@ -143,7 +141,7 @@ module Internationalize
       #   Article.international_not(title: "Entwurf", locale: :de)
       #
       def international_not(locale: nil, **conditions)
-        locale ||= Internationalize.locale
+        locale ||= I18n.locale
         adapter = Adapters.resolve(connection)
         scope = all
 
@@ -233,12 +231,12 @@ module Internationalize
       end
 
       # Declares attributes as internationalized
-      def declare_international_attributes(attributes, fallback:)
+      def declare_international_attributes(attributes)
         self.international_attributes = international_attributes | attributes.map(&:to_sym)
 
         attributes.each do |attr|
           warn_if_missing_default(attr)
-          define_translation_accessors(attr, fallback: fallback)
+          define_translation_accessors(attr)
           define_locale_accessors(attr)
         end
       end
@@ -258,7 +256,7 @@ module Internationalize
 
       # Query translated attributes with exact or partial matching
       def international_query(conditions, locale:, match:, case_sensitive:)
-        locale ||= Internationalize.locale
+        locale ||= I18n.locale
         adapter = Adapters.resolve(connection)
         scope = all
 
@@ -288,20 +286,19 @@ module Internationalize
       end
 
       # Defines the main getter/setter for an attribute
-      def define_translation_accessors(attr, fallback:)
+      def define_translation_accessors(attr)
         translations_column = "#{attr}_translations"
 
-        # Main getter - returns translation for current locale
-        # Cache default locale at definition time for faster fallback
-        default_locale_str = fallback ? Internationalize.default_locale.to_s : nil
+        # Main getter - returns translation for current locale with fallback to default locale
+        default_locale_str = I18n.default_locale.to_s
 
         define_method(attr) do |locale = nil|
           locale_str = (locale || I18n.locale).to_s
           translations = read_attribute(translations_column)
           value = translations[locale_str]
 
-          # Short-circuit: return early if value exists or no fallback needed
-          return value if !fallback || !value.nil? || locale_str == default_locale_str
+          # Short-circuit: return early if value exists or already querying default locale
+          return value if !value.nil? || locale_str == default_locale_str
 
           translations[default_locale_str]
         end
@@ -362,23 +359,10 @@ module Internationalize
 
     # Instance methods
 
-    # Set translation for a specific locale
-    def set_translation(attr, locale, value)
-      column = "#{attr}_translations"
-      translations = read_attribute(column)
-      translations[locale.to_s] = value
-      write_attribute(column, translations)
-    end
-
-    # Get translation for a specific locale without fallback
-    def translation_for(attr, locale)
-      translations = read_attribute("#{attr}_translations")
-      translations[locale.to_s]
-    end
-
     # Check if a translation exists for a specific locale
     def translated?(attr, locale)
-      translation_for(attr, locale).present?
+      translations = read_attribute("#{attr}_translations")
+      translations[locale.to_s].present?
     end
 
     # Returns all locales that have a translation for an attribute

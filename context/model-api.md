@@ -9,16 +9,6 @@ class Article < ApplicationRecord
 end
 ```
 
-## Options
-
-```ruby
-# With fallback (default: true)
-international :title, fallback: true
-
-# Without fallback - returns nil if translation missing
-international :title, fallback: false
-```
-
 ## Generated Instance Methods
 
 For each `international :title` declaration:
@@ -50,8 +40,6 @@ For each locale in `I18n.available_locales`:
 
 | Method | Description |
 |--------|-------------|
-| `set_translation(:title, :de, "Hallo")` | Set translation for attribute/locale |
-| `translation_for(:title, :de)` | Get translation without fallback |
 | `translated?(:title, :de)` | Check if translation exists |
 | `translated_locales(:title)` | Array of locales with translations |
 
@@ -84,18 +72,10 @@ Article.international_attributes  # => [:title, :description]
 
 ## Fallback Behavior
 
-When `fallback: true` (default):
+Translations automatically fall back to the default locale when missing:
 
 ```ruby
 article.title_en = "Hello"
 I18n.locale = :de
 article.title  # => "Hello" (falls back to default locale)
-```
-
-When `fallback: false`:
-
-```ruby
-article.title_en = "Hello"
-I18n.locale = :de
-article.title  # => nil
 ```

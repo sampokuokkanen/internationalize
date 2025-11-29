@@ -152,7 +152,7 @@ end
 class Product < ActiveRecord::Base
   include Internationalize::Model
 
-  international :name, fallback: false
+  international :name
 
   belongs_to :category, optional: true
 end
