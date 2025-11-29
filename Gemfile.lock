@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    internationalize (0.2.3)
+    internationalize (0.2.4)
       activerecord (>= 7.0)
       activesupport (>= 7.0)
 
