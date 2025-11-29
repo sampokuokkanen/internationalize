@@ -8,6 +8,7 @@ group :development, :test do
   gem "rake"
   gem "bake"
   gem "agent-context"
+  gem "bump"
   gem "minitest", "~> 5.20"
   gem "simplecov", require: false
   gem "sqlite3", ">= 1.6"
