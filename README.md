@@ -6,15 +6,18 @@ Lightweight, performant internationalization for Rails with JSON column storage.
 
 Internationalize is a focused, lightweight gem that does one thing well: JSON column translations. No backend abstraction layers, no plugin systems, no extra memory overhead.
 
-Unlike Globalize or Mobility which use separate translation tables requiring JOINs, Internationalize stores translations inline using JSON columns. This means:
+Unlike Globalize (separate translation tables) or Mobility (JSON backend is PostgreSQL-only), Internationalize stores translations inline using JSON columns with **full SQLite, PostgreSQL, and MySQL support**:
 
 - **No JOINs** - translations live in the same table
 - **No N+1 queries** - data is always loaded with the record
 - **No backend overhead** - direct JSON column access, no abstraction layers
 - **~50% less memory** - no per-instance backend objects or plugin chains
 - **Direct method dispatch** - no `method_missing` overhead
-- **Multi-database support** - works with SQLite, PostgreSQL, and MySQL
+- **True multi-database JSON support** - SQLite 3.38+, PostgreSQL 9.4+, MySQL 8.0+
+- **ActionText support** - internationalized rich text with attachments
 - **Visible in schema.rb** - translated fields appear directly in your model's schema
+
+> **Note:** Mobility's JSON/JSONB backends only work with PostgreSQL. For SQLite or MySQL, Mobility requires separate translation tables with JOINs. Internationalize provides JSON column querying across all three databases.
 
 ## Supported Databases
 
@@ -250,13 +253,13 @@ Benchmark with 1000 records, 2 translated attributes (title + body), 3 locales:
 
 ### When to consider Mobility
 
-For table-based translation storage, consider [Mobility](https://github.com/shioyama/mobility) instead:
+Consider [Mobility](https://github.com/shioyama/mobility) if:
 
-- Existing projects with large tables where adding columns is expensive
-- When you need to add translations without modifying existing table schemas
-- Applications that rarely query by translated content
+- You need to add translations without modifying existing table schemas
+- You're on PostgreSQL and want their JSON backend (note: PostgreSQL-only)
+- You need the flexibility of multiple backend strategies
 
-Mobility's table backend stores translations in separate tables with JOINs, which trades query performance for schema flexibility.
+Mobility's table backend stores translations in separate tables with JOINs, which trades query performance for schema flexibility. Their JSON backend is PostgreSQL-only.
 
 ## License
 
