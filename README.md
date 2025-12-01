@@ -1,5 +1,8 @@
 # Internationalize
 
+[![Gem Version](https://badge.fury.io/rb/internationalize.svg)](https://rubygems.org/gems/internationalize)
+[![Build](https://github.com/sampokuokkanen/internationalize/workflows/CI/badge.svg)](https://github.com/sampokuokkanen/internationalize/actions)
+
 Lightweight, performant internationalization for Rails with JSON column storage.
 
 ## Why Internationalize?
