@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `validates_international` method for locale-specific validations:
+  - `uniqueness: true` - validates uniqueness per-locale (requires JSON column querying)
+  - `presence: { locales: [:en, :de] }` - requires translations for specific locales (useful for admin interfaces)
+- Standard Rails validations (`validates :title, presence: true`) now work with virtual accessors
+
 ## [0.2.4] - 2024-11-29
 
 ### Added

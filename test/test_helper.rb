@@ -174,6 +174,47 @@ class Tag < ActiveRecord::Base
   has_and_belongs_to_many :articles, join_table: :article_tags
 end
 
+# Test models for validations
+
+# Use validates_international for uniqueness (requires JSON column querying)
+class ValidatedWithUniqueness < ActiveRecord::Base
+  self.table_name = "articles"
+  include Internationalize::Model
+
+  international :title
+
+  validates_international :title, uniqueness: true
+end
+
+# Use validates_international for multi-locale presence (admin interfaces)
+class ValidatedWithLocales < ActiveRecord::Base
+  self.table_name = "articles"
+  include Internationalize::Model
+
+  international :title
+
+  validates_international :title, presence: { locales: [:en, :de] }
+end
+
+# Use standard Rails validations for simple cases (recommended)
+class ValidatedWithRails < ActiveRecord::Base
+  self.table_name = "articles"
+  include Internationalize::Model
+
+  international :title
+
+  validates :title, presence: true, length: { minimum: 3 }
+end
+
+class ValidatedWithRailsFormat < ActiveRecord::Base
+  self.table_name = "articles"
+  include Internationalize::Model
+
+  international :title
+
+  validates :title, format: { with: /\A[a-z]+\z/ }, allow_blank: true
+end
+
 # Base test class
 class InternationalizeTestCase < Minitest::Test
   def setup

@@ -80,6 +80,58 @@ I18n.locale = :de
 article.title  # => "Hello" (falls back to default locale)
 ```
 
+## Validations
+
+For most validations, use standard Rails validators—they work with the virtual accessor:
+
+```ruby
+class Article < ApplicationRecord
+  include Internationalize::Model
+  international :title
+
+  # Standard Rails validations (recommended)
+  validates :title, presence: true
+  validates :title, length: { minimum: 3, maximum: 100 }
+  validates :title, format: { with: /\A[a-z]+\z/ }
+end
+```
+
+Use `validates_international` only for uniqueness or multi-locale presence:
+
+```ruby
+class Article < ApplicationRecord
+  include Internationalize::Model
+  international :title
+
+  # Uniqueness per-locale (requires JSON column querying)
+  validates_international :title, uniqueness: true
+
+  # Multi-locale presence (for admin interfaces editing all translations at once)
+  validates_international :title, presence: { locales: [:en, :de] }
+end
+```
+
+### Validation Options
+
+| Option | Description |
+|--------|-------------|
+| `uniqueness: true` | Validates uniqueness per-locale (current locale) |
+| `presence: { locales: [:en, :de] }` | Requires translations for specific locales |
+
+### Error Keys
+
+Standard Rails validations add errors to the virtual attribute:
+
+```ruby
+article.errors[:title]  # => ["can't be blank"]
+```
+
+`validates_international` adds errors to locale-specific keys:
+
+```ruby
+article.errors[:title_en]  # => ["has already been taken"]
+```
+
 ## ActionText Support
 
 For rich text with attachments, include `Internationalize::RichText` and use `international_rich_text`:

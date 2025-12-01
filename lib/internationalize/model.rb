@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "validations"
+
 module Internationalize
   # Mixin for ActiveRecord models to enable internationalization
   #
@@ -16,6 +18,7 @@ module Internationalize
   #
   module Model
     extend ActiveSupport::Concern
+    include Internationalize::Validations
 
     VALID_DIRECTIONS = ["ASC", "DESC"].freeze
 
