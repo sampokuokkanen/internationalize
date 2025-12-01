@@ -217,14 +217,19 @@ hello_world:
 
 ## Configuration
 
+No configuration required. Internationalize uses your existing Rails I18n settings:
+
+- **Locales**: `I18n.available_locales`
+- **Fallback**: `I18n.default_locale`
+
+To override locales (rarely needed):
+
 ```ruby
 # config/initializers/internationalize.rb
 Internationalize.configure do |config|
-  config.available_locales = [:en, :de, :fr]  # Defaults to I18n.available_locales
+  config.available_locales = [:en, :de, :fr]
 end
 ```
-
-Fallback uses `I18n.default_locale` automatically.
 
 ## Performance Comparison
 

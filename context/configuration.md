@@ -1,16 +1,20 @@
 # Internationalize: Configuration
 
-## Global Configuration
+## Zero Configuration
+
+No configuration required. Internationalize uses your existing Rails I18n settings:
+
+- `I18n.available_locales` - determines which locale accessors are generated
+- `I18n.default_locale` - used for fallback when translation is missing
+
+## Override Locales (Rarely Needed)
 
 ```ruby
 # config/initializers/internationalize.rb
 Internationalize.configure do |config|
-  # Override available locales (defaults to I18n.available_locales)
   config.available_locales = [:en, :de, :fr, :es]
 end
 ```
-
-Fallback locale is always `I18n.default_locale`.
 
 ## Database Setup
 
