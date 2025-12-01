@@ -380,6 +380,7 @@ class ModelTest < InternationalizeTestCase
       Class.new(ActiveRecord::Base) do
         self.table_name = "articles"
         include Internationalize::Model
+
         international :title
       end
     end

@@ -334,7 +334,7 @@ module Internationalize
           hash.each_key do |key|
             unless allowed_locales.include?(key.to_s)
               raise ArgumentError, "Invalid locale '#{key}' for #{attr}_translations. " \
-                "Allowed locales: #{allowed_locales.join(', ')}"
+                "Allowed locales: #{allowed_locales.join(", ")}"
             end
           end
 
@@ -351,7 +351,7 @@ module Internationalize
 
           if locale_str.include?("-")
             raise ArgumentError, "Locale '#{locale}' contains a hyphen which is invalid for Ruby method names. " \
-              "Use underscore format instead: :#{locale_str.tr('-', '_')}"
+              "Use underscore format instead: :#{locale_str.tr("-", "_")}"
           end
 
           getter_method = :"#{attr}_#{locale}"

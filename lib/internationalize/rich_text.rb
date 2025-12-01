@@ -31,7 +31,7 @@ module Internationalize
           locale_str = locale.to_s
           if locale_str.include?("-")
             raise ArgumentError, "Locale '#{locale}' contains a hyphen which is invalid for Ruby method names. " \
-              "Use underscore format instead: :#{locale_str.tr('-', '_')}"
+              "Use underscore format instead: :#{locale_str.tr("-", "_")}"
           end
         end
 
