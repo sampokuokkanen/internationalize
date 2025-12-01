@@ -181,7 +181,7 @@ article.title  # => "Hello" (falls back to :en)
 
 ### ActionText Support
 
-For rich text with attachments, use `international_rich_text` (auto-loaded when ActionText is available):
+For rich text with attachments (requires ActionText):
 
 ```ruby
 class Article < ApplicationRecord

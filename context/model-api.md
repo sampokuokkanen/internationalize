@@ -82,12 +82,12 @@ article.title  # => "Hello" (falls back to default locale)
 
 ## ActionText Support
 
-For rich text with attachments, use `international_rich_text` (auto-loaded when ActionText is available):
+For rich text with attachments, include `Internationalize::RichText` and use `international_rich_text`:
 
 ```ruby
 class Article < ApplicationRecord
   include Internationalize::Model
-  include Internationalize::RichText
+  include Internationalize::RichText  # Requires ActionText
 
   international_rich_text :content
 end
