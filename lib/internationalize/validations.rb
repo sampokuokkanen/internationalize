@@ -51,7 +51,7 @@ module Internationalize
       def validate_international_presence(attr, options)
         unless options.is_a?(Hash) && options[:locales]
           raise ArgumentError, "validates_international presence requires locales: option. " \
-                               "For current locale, use: validates :#{attr}, presence: true"
+            "For current locale, use: validates :#{attr}, presence: true"
         end
 
         locales = options[:locales].map(&:to_s)

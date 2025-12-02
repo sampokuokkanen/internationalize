@@ -71,10 +71,10 @@ article.title_translations  # => {"en" => "Hello World", "de" => "Hallo Welt"}
 
 ```ruby
 # Exact match
-Article.international(title: "Hello World")
+Article.i18n_where(title: "Hello World")
 
 # Partial match (LIKE)
-Article.international(title: "Hello", match: :partial)
+Article.i18n_where(title: "Hello", match: :partial)
 
 # Order by translation
 Article.international_order(:title, :desc)

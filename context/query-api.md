@@ -8,22 +8,31 @@ All query methods default to the current `I18n.locale`. Use the `locale:` option
 
 ```ruby
 # Uses current I18n.locale
-Article.international(title: "Hello World")
+Article.i18n_where(title: "Hello World")
 
 # Explicit locale
-Article.international(title: "Hallo Welt", locale: :de)
+Article.i18n_where(title: "Hallo Welt", locale: :de)
 ```
 
 ## Query Methods
 
-### international(**conditions, locale: nil)
+### i18n_where(**conditions, locale: nil, match: :exact, case_sensitive: false)
 
-Exact match on translated attributes:
+Query by translated attributes. Also available as `international_where`.
+
+Exact match (default):
 
 ```ruby
-Article.international(title: "Hello World")
-Article.international(title: "Hello", status: "published")
-Article.international(title: "Hallo Welt", locale: :de)
+Article.i18n_where(title: "Hello World")
+Article.i18n_where(title: "Hello", status: "published")
+Article.i18n_where(title: "Hallo Welt", locale: :de)
+```
+
+Partial match (case-insensitive LIKE):
+
+```ruby
+Article.i18n_where(title: "hello", match: :partial)
+Article.i18n_where(title: "Hello", match: :partial, case_sensitive: true)
 ```
 
 ### international_not(**conditions, locale: nil)
@@ -33,22 +42,6 @@ Exclude records matching conditions:
 ```ruby
 Article.international_not(title: "Draft")
 Article.international_not(title: "Entwurf", locale: :de)
-```
-
-### international_search(**conditions, locale: nil, case_sensitive: false)
-
-Substring search (LIKE/ILIKE):
-
-```ruby
-# Case-insensitive (default)
-Article.international_search(title: "hello")
-Article.international_search(title: "hello", description: "world")
-
-# Case-sensitive
-Article.international_search(title: "Hello", case_sensitive: true)
-
-# With explicit locale
-Article.international_search(title: "welt", locale: :de)
 ```
 
 ### international_order(attribute, direction = :asc, locale: nil)
@@ -85,7 +78,7 @@ Article.untranslated(:title, locale: :de)
 All methods return `ActiveRecord::Relation`, so they chain naturally with AR methods:
 
 ```ruby
-Article.international(title: "Hello World")
+Article.i18n_where(title: "Hello World")
        .where(published: true)
        .order(created_at: :desc)
        .limit(10)
@@ -98,20 +91,20 @@ Use `merge` to combine multiple international queries:
 
 ```ruby
 # Search + filter + order
-Article.international_search(title: "hello")
-       .merge(Article.international(status: "published"))
+Article.i18n_where(title: "hello", match: :partial)
+       .merge(Article.i18n_where(status: "published"))
        .merge(Article.international_order(:title, :desc))
 
 # Query across multiple locales
-Article.international(title: "Hello World", locale: :en)
-       .merge(Article.international(title: "Hallo Welt", locale: :de))
+Article.i18n_where(title: "Hello World", locale: :en)
+       .merge(Article.i18n_where(title: "Hallo Welt", locale: :de))
 ```
 
 ## Examples
 
 ```ruby
 # Find published articles with German title containing "Welt"
-Article.international_search(title: "Welt", locale: :de)
+Article.i18n_where(title: "Welt", match: :partial, locale: :de)
        .where(published: true)
        .merge(Article.international_order(:title, locale: :de))
        .limit(10)

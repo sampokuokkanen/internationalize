@@ -545,4 +545,29 @@ class QueryTest < InternationalizeTestCase
     assert_equal(2, drafts.size)
     assert_equal(["Alpha", "Beta"], drafts.map(&:title))
   end
+
+  # ===================
+  # international_where() Alias
+  # ===================
+
+  def test_international_where_is_alias_for_international_query
+    results = Article.international_where(title: "Hello World").to_a
+
+    assert_equal(1, results.size)
+    assert_equal(@hello, results.first)
+  end
+
+  def test_international_where_with_partial_match
+    results = Article.international_where(title: "hello", match: :partial).to_a
+
+    assert_equal(1, results.size)
+    assert_equal(@hello, results.first)
+  end
+
+  def test_international_where_with_locale
+    results = Article.international_where(title: "Hallo Welt", locale: :de).to_a
+
+    assert_equal(1, results.size)
+    assert_equal(@hello, results.first)
+  end
 end
