@@ -43,9 +43,9 @@ module Internationalize
           declare_international_attributes(attributes)
         else
           # Query mode: Article.international(title: "Hello") - DEPRECATED
-          warn "[Internationalize] DEPRECATION WARNING: Using `international` for querying is deprecated. " \
+          warn("[Internationalize] DEPRECATION WARNING: Using `international` for querying is deprecated. " \
             "Use `i18n_where` or `international_where` instead. " \
-            "(called from #{caller(1..1).first})"
+            "(called from #{caller(1..1).first})")
           international_query(conditions, locale: locale, match: match, case_sensitive: case_sensitive)
         end
       end
