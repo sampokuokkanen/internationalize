@@ -49,17 +49,17 @@ All query methods default to current `I18n.locale` and return `ActiveRecord::Rel
 
 | Method | Description |
 |--------|-------------|
-| `international(**conditions, locale: nil)` | Exact match query |
+| `i18n_where(**conditions, locale: nil, match: :exact)` | Query by translation (short alias) |
+| `international_where(**conditions, locale: nil, match: :exact)` | Query by translation |
 | `international_not(**conditions, locale: nil)` | Exclude matching records |
-| `international_search(**conditions, locale: nil, case_sensitive: false)` | Substring search |
 | `international_order(attr, dir = :asc, locale: nil)` | Order by translation |
 | `translated(*attrs, locale: nil)` | Find records with translation |
 | `untranslated(*attrs, locale: nil)` | Find records missing translation |
 
 ```ruby
 # Examples
-Article.international(title: "Hello World")
-Article.international_search(title: "hello", locale: :de)
+Article.i18n_where(title: "Hello World")
+Article.i18n_where(title: "hello", match: :partial)  # case-insensitive LIKE
 Article.international_order(:title, :desc)
 Article.translated(:title, locale: :de)
 ```

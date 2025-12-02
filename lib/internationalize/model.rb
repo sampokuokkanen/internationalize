@@ -12,8 +12,8 @@ module Internationalize
   #   end
   #
   #   # Querying
-  #   Article.international(title: "Hello")
-  #   Article.international(title: "hello", match: :partial)
+  #   Article.i18n_where(title: "Hello")
+  #   Article.i18n_where(title: "hello", match: :partial)
   #   Article.international_order(:title, :desc)
   #
   module Model
@@ -27,31 +27,55 @@ module Internationalize
     end
 
     class_methods do
-      # Declares attributes as internationalized OR queries by translated attributes
+      # Declares attributes as internationalized
       #
-      # When called with Symbol arguments, declares attributes as internationalized:
+      # @example
       #   international :title, :description
       #
-      # When called with keyword arguments, queries translated attributes:
-      #   Article.international(title: "Hello")                      # exact match
-      #   Article.international(title: "Hello", locale: :de)         # exact match in German
-      #   Article.international(title: "hello", match: :partial)     # LIKE match (case-insensitive)
-      #   Article.international(title: "Hello", match: :partial, case_sensitive: true)
-      #
       # @param attributes [Array<Symbol>] attributes to declare as internationalized
-      # @param locale [Symbol] locale to query (default: current locale)
-      # @param match [Symbol] :exact or :partial (default: :exact)
-      # @param case_sensitive [Boolean] for partial matching only (default: false)
-      # @param conditions [Hash] attribute => value pairs to query
+      #
+      # @deprecated Using this method for querying is deprecated.
+      #   Use {#i18n_where} or {#international_where} instead.
       #
       def international(*attributes, locale: nil, match: :exact, case_sensitive: false, **conditions)
         if attributes.any? && attributes.first.is_a?(Symbol) && conditions.empty?
           # Declaration mode: international :title, :description
           declare_international_attributes(attributes)
         else
-          # Query mode: Article.international(title: "Hello")
+          # Query mode: Article.international(title: "Hello") - DEPRECATED
+          warn "[Internationalize] DEPRECATION WARNING: Using `international` for querying is deprecated. " \
+            "Use `i18n_where` or `international_where` instead. " \
+            "(called from #{caller(1..1).first})"
           international_query(conditions, locale: locale, match: match, case_sensitive: case_sensitive)
         end
+      end
+
+      # Query translated attributes
+      #
+      # @param conditions [Hash] attribute => value pairs to query
+      # @param locale [Symbol] locale to query (default: current locale)
+      # @param match [Symbol] :exact or :partial (default: :exact)
+      # @param case_sensitive [Boolean] for partial matching only (default: false)
+      # @return [ActiveRecord::Relation]
+      #
+      # @example
+      #   Article.international_where(title: "Hello")
+      #   Article.international_where(title: "hello", match: :partial)
+      #
+      def international_where(locale: nil, match: :exact, case_sensitive: false, **conditions)
+        international_query(conditions, locale: locale, match: match, case_sensitive: case_sensitive)
+      end
+
+      # Short alias for international_where
+      #
+      # @see #international_where
+      #
+      # @example
+      #   Article.i18n_where(title: "Hello")
+      #   Article.i18n_where(title: "hello", match: :partial)
+      #
+      def i18n_where(locale: nil, match: :exact, case_sensitive: false, **conditions)
+        international_query(conditions, locale: locale, match: match, case_sensitive: case_sensitive)
       end
 
       # Order by translated attribute

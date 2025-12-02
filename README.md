@@ -119,13 +119,12 @@ All query methods default to the current `I18n.locale` and return ActiveRecord r
 
 ```ruby
 # Exact match on translation (uses current locale by default)
-Article.international(title: "Hello World")
-Article.international(title: "Hallo Welt", locale: :de)
+Article.i18n_where(title: "Hello World")
+Article.i18n_where(title: "Hallo Welt", locale: :de)
 
 # Partial match / search (case-insensitive LIKE)
-Article.international(title: "hello", match: :partial)
-Article.international(title: "Hello", match: :partial, case_sensitive: true)
-Article.international(title: "hallo", match: :partial, locale: :de)
+Article.i18n_where(title: "hello", match: :partial)
+Article.i18n_where(title: "Hello", match: :partial, case_sensitive: true)
 
 # Exclude matches
 Article.international_not(title: "Draft")
@@ -142,19 +141,15 @@ Article.translated(:title, locale: :de)
 Article.untranslated(:title, locale: :de)
 
 # Chain with ActiveRecord methods
-Article.international(title: "Hello World")
+Article.i18n_where(title: "Hello World")
        .where(published: true)
        .includes(:author)
        .limit(10)
 
 # Combine queries
-Article.international(title: "hello", match: :partial)
+Article.i18n_where(title: "hello", match: :partial)
        .where(status: "published")
        .merge(Article.international_order(:title, :desc))
-
-# Query across multiple locales
-Article.international(title: "Hello World", locale: :en)
-       .merge(Article.international(title: "Hallo Welt", locale: :de))
 ```
 
 ### Helper Methods
