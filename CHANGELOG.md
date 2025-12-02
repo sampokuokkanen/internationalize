@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2025-12-02
+
+### Added
+
+- `i18n_where` query method as a short, convenient alias for querying translated attributes
+  - `Article.i18n_where(title: "Hello")` - exact match
+  - `Article.i18n_where(title: "hello", match: :partial)` - LIKE match
+
+### Deprecated
+
+- Using `international` for querying is now deprecated; use `i18n_where` or `international_where` instead
+  - A deprecation warning is now emitted when using `international` for queries
+
 ## [0.3.0] - 2024-12-01
 
 ### Added
