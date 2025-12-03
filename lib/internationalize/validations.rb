@@ -60,7 +60,7 @@ module Internationalize
           locales.each do |locale|
             value = record.send("#{attr}_#{locale}")
             if value.blank?
-              record.errors.add("#{attr}_#{locale}", :blank)
+              record.errors.add(attr, :blank)
             end
           end
         end
@@ -76,7 +76,7 @@ module Internationalize
           scope = scope.where.not(id: record.id) if record.persisted?
 
           if scope.exists?
-            record.errors.add("#{attr}_#{locale}", :taken)
+            record.errors.add(attr, :taken)
           end
         end
       end

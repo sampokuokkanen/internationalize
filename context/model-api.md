@@ -120,17 +120,44 @@ end
 
 ### Error Keys
 
-Standard Rails validations add errors to the virtual attribute:
+Both standard Rails validations and `validates_international` add errors to the base attribute for clean user-facing messages:
 
 ```ruby
-article.errors[:title]  # => ["can't be blank"]
+article.errors[:title]  # => ["has already been taken"]
+# Displays as: "Title has already been taken" (not "Title en has already been taken")
 ```
 
-`validates_international` adds errors to locale-specific keys:
+#### Locale-Specific Error Messages
+
+For admin interfaces where you need to indicate which specific locale failed, use custom validations that add errors to locale-suffixed attributes:
 
 ```ruby
-article.errors[:title_en]  # => ["has already been taken"]
+validate :validate_required_translations
+
+private
+
+def validate_required_translations
+  [:en, :de].each do |locale|
+    if send("title_#{locale}").blank?
+      errors.add("title_#{locale}", :blank)
+    end
+  end
+end
 ```
+
+When using locale-suffixed error keys, configure Rails I18n for user-friendly display:
+
+```yaml
+# config/locales/en.yml
+en:
+  activerecord:
+    attributes:
+      article:
+        title_en: "Title (English)"
+        title_de: "Title (German)"
+```
+
+This displays as "Title (German) can't be blank" instead of "Title de can't be blank".
 
 ## ActionText Support
 

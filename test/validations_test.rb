@@ -14,7 +14,7 @@ class ValidationsTest < InternationalizeTestCase
     I18n.locale = :en
 
     refute(article.valid?)
-    assert_includes(article.errors[:title_en], I18n.t("errors.messages.taken"))
+    assert_includes(article.errors[:title], I18n.t("errors.messages.taken"))
   end
 
   def test_uniqueness_allows_same_value_different_locale
@@ -62,8 +62,8 @@ class ValidationsTest < InternationalizeTestCase
     article = ValidatedWithLocales.new(title_en: "Hello")
 
     refute(article.valid?)
-    assert_empty(article.errors[:title_en])
-    assert_includes(article.errors[:title_de], I18n.t("errors.messages.blank"))
+    # Error is added to base attribute, not locale-suffixed
+    assert_includes(article.errors[:title], I18n.t("errors.messages.blank"))
   end
 
   def test_specific_locales_passes_when_all_present
@@ -76,8 +76,8 @@ class ValidationsTest < InternationalizeTestCase
     article = ValidatedWithLocales.new
 
     refute(article.valid?)
-    assert_includes(article.errors[:title_en], I18n.t("errors.messages.blank"))
-    assert_includes(article.errors[:title_de], I18n.t("errors.messages.blank"))
+    # Errors are added to base attribute for each missing locale
+    assert_includes(article.errors[:title], I18n.t("errors.messages.blank"))
   end
 
   def test_presence_without_locales_raises_error
