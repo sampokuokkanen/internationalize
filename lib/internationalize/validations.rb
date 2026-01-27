@@ -72,7 +72,7 @@ module Internationalize
           value = record.send("#{attr}_#{locale}")
           next if value.blank?
 
-          scope = record.class.international(attr => value, locale: locale)
+          scope = record.class.i18n_where(attr => value, locale: locale)
           scope = scope.where.not(id: record.id) if record.persisted?
 
           if scope.exists?
