@@ -570,4 +570,70 @@ class QueryTest < InternationalizeTestCase
     assert_equal(1, results.size)
     assert_equal(@hello, results.first)
   end
+
+  # ===================
+  # i18n_pluck()
+  # ===================
+
+  def test_i18n_pluck_with_international_attribute
+    results = Article.where(id: @hello.id).i18n_pluck(:id, :title)
+
+    assert_equal(1, results.size)
+    assert_equal([@hello.id, "Hello World"], results.first)
+  end
+
+  def test_i18n_pluck_with_explicit_locale
+    results = Article.where(id: @hello.id).i18n_pluck(:id, :title, locale: :de)
+
+    assert_equal(1, results.size)
+    assert_equal([@hello.id, "Hallo Welt"], results.first)
+  end
+
+  def test_i18n_pluck_uses_current_locale
+    I18n.locale = :de
+    results = Article.where(id: @hello.id).i18n_pluck(:id, :title)
+
+    assert_equal(1, results.size)
+    assert_equal([@hello.id, "Hallo Welt"], results.first)
+  end
+
+  def test_i18n_pluck_with_non_international_attributes
+    results = Article.where(id: @hello.id).i18n_pluck(:id, :status)
+
+    assert_equal(1, results.size)
+    assert_equal([@hello.id, "published"], results.first)
+  end
+
+  def test_i18n_pluck_with_mixed_attributes
+    results = Article.where(id: @hello.id).i18n_pluck(:id, :title, :status)
+
+    assert_equal(1, results.size)
+    assert_equal([@hello.id, "Hello World", "published"], results.first)
+  end
+
+  def test_i18n_pluck_with_multiple_international_attributes
+    results = Article.where(id: @hello.id).i18n_pluck(:title, :description)
+
+    assert_equal(1, results.size)
+    assert_equal(["Hello World", "A greeting"], results.first)
+  end
+
+  def test_i18n_pluck_returns_nil_for_missing_translation
+    results = Article.where(id: @untranslated.id).i18n_pluck(:id, :title, locale: :de)
+
+    assert_equal(1, results.size)
+    assert_equal([@untranslated.id, nil], results.first)
+  end
+
+  def test_i18n_pluck_with_limit
+    results = Article.limit(2).i18n_pluck(:id, :title)
+
+    assert_equal(2, results.size)
+  end
+
+  def test_i18n_pluck_single_attribute
+    results = Article.where(id: @hello.id).i18n_pluck(:title)
+
+    assert_equal(["Hello World"], results)
+  end
 end

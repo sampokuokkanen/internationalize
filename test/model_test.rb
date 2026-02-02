@@ -8,6 +8,13 @@ class InternationalizeConfigTest < Minitest::Test
     Internationalize.available_locales = nil
   end
 
+  def test_rich_text_can_be_required
+    # Regression test for https://github.com/sampokuokkanen/internationalize/issues/9
+    # Ensures rich_text.rb is loadable and has correct file permissions
+    require "internationalize/rich_text"
+    assert defined?(Internationalize::RichText), "RichText module should be defined after require"
+  end
+
   def test_configure_block
     Internationalize.configure do |config|
       config.available_locales = [:en, :de]

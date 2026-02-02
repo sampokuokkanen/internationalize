@@ -157,6 +157,33 @@ module Internationalize
         scope
       end
 
+      # Pluck attributes with automatic JSON extraction for internationalized attributes
+      #
+      # @param attributes [Array<Symbol>] attributes to pluck
+      # @param locale [Symbol] locale for internationalized attributes (default: current locale)
+      # @return [Array] plucked values
+      #
+      # @example
+      #   Article.i18n_pluck(:id, :title)
+      #   Article.i18n_pluck(:id, :title, :description, locale: :de)
+      #   Article.limit(10).i18n_pluck(:id, :title, :status)
+      #
+      def i18n_pluck(*attributes, locale: nil)
+        locale ||= I18n.locale
+        adapter = Adapters.resolve(connection)
+
+        pluck_args = attributes.map do |attr|
+          if international_attributes.include?(attr.to_sym)
+            json_col = "#{attr}_translations"
+            Arel.sql(adapter.json_extract(json_col, locale))
+          else
+            attr
+          end
+        end
+
+        pluck(*pluck_args)
+      end
+
       # Exclude records matching translated attribute conditions
       #
       # @param conditions [Hash] attribute => value pairs to exclude

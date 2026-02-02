@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2025-02-02
+
+### Added
+
+- `i18n_pluck` method for efficient plucking of internationalized attributes
+  - Automatically handles JSON extraction for translated attributes
+  - Non-international attributes pass through to regular pluck
+  - Supports explicit locale parameter: `Article.i18n_pluck(:id, :title, locale: :de)`
+  - Example: `Article.limit(100).i18n_pluck(:id, :name, :latitude)` for efficient map data
+
+### Fixed
+
+- Fixed file permissions issue causing `LoadError: cannot load such file -- internationalize/rich_text` in production environments ([#9](https://github.com/sampokuokkanen/internationalize/issues/9))
+  - Gem files now have correct 644 permissions (world-readable)
+
 ## [0.5.1] - 2025-01-27
 
 ### Fixed
