@@ -14,6 +14,8 @@ group :development, :test do
   gem "sqlite3", ">= 1.6"
   gem "pg", "~> 1.5"
   gem "railties", ">= 7.0" # For generator tests
+  gem "actiontext", ">= 7.0" # For rich_text tests
+  gem "activestorage", ">= 7.0" # Required by ActionText
   gem "rubocop-shopify", "~> 2.18"
   gem "rubocop-performance", "~> 1.23"
   gem "mobility", "~> 1.3", require: false # For benchmarks only

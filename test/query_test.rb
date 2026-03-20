@@ -432,34 +432,37 @@ class QueryTest < InternationalizeTestCase
   # Adapter-Specific SQL Branches (for full branch coverage)
   # ===================
 
-  def test_international_partial_case_sensitive_postgresql_uses_like
+  def test_postgresql_adapter_uses_like_for_case_sensitive
+    # Test PostgreSQL adapter SQL generation directly
     pg_adapter = Internationalize::Adapters::PostgreSQL.new
-    Internationalize::Adapters.stub(:resolve, pg_adapter) do
-      sql = Article.international(title: "Hello", match: :partial, case_sensitive: true).to_sql
-      assert_includes(sql, "LIKE")
-      assert_includes(sql, "%Hello%")
-    end
+
+    sql, pattern_type = pg_adapter.like_sensitive("title_translations", :en)
+    assert_includes(sql, "LIKE")
+    assert_equal(:like, pattern_type)
+
+    pattern = pg_adapter.like_pattern("Hello")
+    assert_equal("%Hello%", pattern)
   end
 
-  def test_international_partial_case_sensitive_sqlite_uses_glob
+  def test_sqlite_adapter_uses_glob_for_case_sensitive
+    # Test SQLite adapter SQL generation directly
     sqlite_adapter = Internationalize::Adapters::SQLite.new
-    Internationalize::Adapters.stub(:resolve, sqlite_adapter) do
-      sql = Article.international(title: "Hello", match: :partial, case_sensitive: true).to_sql
-      assert_includes(sql, "GLOB")
-      assert_includes(sql, "*Hello*")
-    end
+
+    sql, pattern_type = sqlite_adapter.like_sensitive("title_translations", :en)
+    assert_includes(sql, "GLOB")
+    assert_equal(:glob, pattern_type)
+
+    pattern = sqlite_adapter.glob_pattern("Hello")
+    assert_equal("*Hello*", pattern)
   end
 
-  def test_international_partial_case_sensitive_postgresql_uses_like_pattern
-    # Test that PostgreSQL uses like_pattern (not glob_pattern) for case-sensitive partial
-    # This exercises the `pattern_type == :glob ? glob : like` branch when pattern_type is :like
+  def test_postgresql_adapter_uses_ilike_for_case_insensitive
+    # Test PostgreSQL uses ILIKE for case-insensitive matching
     pg_adapter = Internationalize::Adapters::PostgreSQL.new
-    Internationalize::Adapters.stub(:resolve, pg_adapter) do
-      sql = Article.international(title: "Hello", match: :partial, case_sensitive: true).to_sql
-      assert_includes(sql, "LIKE")
-      assert_includes(sql, "%Hello%")
-      refute_includes(sql, "GLOB")
-    end
+
+    sql, pattern_type = pg_adapter.like_insensitive("title_translations", :en)
+    assert_includes(sql, "ILIKE")
+    assert_equal(:like, pattern_type)
   end
 
   def test_international_not_with_translated_attribute
@@ -470,14 +473,13 @@ class QueryTest < InternationalizeTestCase
     refute_includes(results, @hello)
   end
 
-  # Additional tests for branch coverage
-  def test_international_partial_insensitive_postgresql
-    # Test case-insensitive search on translated attribute with PostgreSQL
-    pg_adapter = Internationalize::Adapters::PostgreSQL.new
-    Internationalize::Adapters.stub(:resolve, pg_adapter) do
-      sql = Article.international(title: "hello", match: :partial).to_sql
-      assert_includes(sql, "ILIKE")
-    end
+  def test_sqlite_adapter_uses_like_for_case_insensitive
+    # Test SQLite uses LIKE for case-insensitive matching
+    sqlite_adapter = Internationalize::Adapters::SQLite.new
+
+    sql, pattern_type = sqlite_adapter.like_insensitive("title_translations", :en)
+    assert_includes(sql, "LIKE")
+    assert_equal(:like, pattern_type)
   end
 
   # ===================

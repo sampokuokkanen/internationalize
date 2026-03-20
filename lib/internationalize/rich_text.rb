@@ -45,7 +45,8 @@ module Internationalize
 
         # Main getter - returns rich text for current locale with fallback to default locale
         define_method(name) do
-          locale_str = I18n.locale.to_s
+          # Normalize hyphenated locales (e.g., "zh-TW" -> "zh_TW") for method dispatch
+          locale_str = I18n.locale.to_s.tr("-", "_")
           rich_text = send(:"#{name}_#{locale_str}")
 
           if rich_text.blank? && locale_str != default_locale_str
@@ -57,7 +58,9 @@ module Internationalize
 
         # Main setter - sets rich text for current locale
         define_method(:"#{name}=") do |value|
-          send(:"#{name}_#{I18n.locale}=", value)
+          # Normalize hyphenated locales (e.g., "zh-TW" -> "zh_TW") for method dispatch
+          locale_str = I18n.locale.to_s.tr("-", "_")
+          send(:"#{name}_#{locale_str}=", value)
         end
 
         # Predicate method

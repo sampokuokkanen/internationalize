@@ -12,7 +12,7 @@ class InternationalizeConfigTest < Minitest::Test
     # Regression test for https://github.com/sampokuokkanen/internationalize/issues/9
     # Ensures rich_text.rb is loadable and has correct file permissions
     require "internationalize/rich_text"
-    assert defined?(Internationalize::RichText), "RichText module should be defined after require"
+    assert(defined?(Internationalize::RichText), "RichText module should be defined after require")
   end
 
   def test_configure_block
